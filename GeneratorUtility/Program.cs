@@ -12,6 +12,8 @@ namespace BigFileStuff.GeneratorUtility
     {
         private static async Task Main(string[] args)
         {
+            // TODO handle cancellation token
+            // TODO add cli progress bar
             await Parser.Default.ParseArguments<CommandLineOptions>(args)
                 .MapResult(async options =>
                 {

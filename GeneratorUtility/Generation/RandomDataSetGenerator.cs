@@ -5,6 +5,8 @@ namespace BigFileStuff.GeneratorUtility.Generation
 {
     public class RandomDataSetGenerator : IDataSetGenerator
     {
+        // TODO consts to options
+
         private const int StringLength = 8;
 
         // 12 bytes for text num, point and space to string 

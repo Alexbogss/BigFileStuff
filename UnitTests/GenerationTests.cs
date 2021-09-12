@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace UnitTests
 {
     [TestClass]
-    public class GenerationUtilityTests
+    public class GenerationTests
     {
         [TestMethod]
         public void TestDataSetGeneration()
@@ -31,7 +31,7 @@ namespace UnitTests
         [TestMethod]
         public async Task TestBigFileGenerate()
         {
-            const long size = 5_000_000_000;
+            const long size = 500_000_000;
             const string path = "./test.txt";
 
             if (File.Exists(path))
@@ -54,6 +54,8 @@ namespace UnitTests
             Assert.IsTrue(File.Exists(path));
 
             Trace.WriteLine($"Elapsed time for {size} bytes: {sw.ElapsedMilliseconds}ms");
+
+            //File.Delete(path);
         }
     }
 }

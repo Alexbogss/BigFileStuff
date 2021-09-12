@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GeneratorUtility\GeneratorUtility.csproj" />
+    <ProjectReference Include="..\SorterUtility\SorterUtility.csproj" />
   </ItemGroup>
 
 </Project>

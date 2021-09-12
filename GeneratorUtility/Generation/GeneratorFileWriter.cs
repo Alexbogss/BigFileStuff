@@ -25,6 +25,7 @@ namespace BigFileStuff.GeneratorUtility.Generation
             }
         }
 
+        // TODO to specification option
         private string GetRow(Random random)
         {
             var numberValue = random.Next();

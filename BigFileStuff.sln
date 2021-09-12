@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\Unit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeneratorUtility", "GeneratorUtility\GeneratorUtility.csproj", "{683D7EEE-5A82-4E4F-822C-6AA18624D9B3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SorterUtility", "SorterUtility\SorterUtility.csproj", "{AAC03C15-D7AB-4E4E-BC78-F0CF23788BCD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{683D7EEE-5A82-4E4F-822C-6AA18624D9B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{683D7EEE-5A82-4E4F-822C-6AA18624D9B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{683D7EEE-5A82-4E4F-822C-6AA18624D9B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAC03C15-D7AB-4E4E-BC78-F0CF23788BCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAC03C15-D7AB-4E4E-BC78-F0CF23788BCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAC03C15-D7AB-4E4E-BC78-F0CF23788BCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAC03C15-D7AB-4E4E-BC78-F0CF23788BCD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
