@@ -31,7 +31,7 @@ namespace UnitTests
         [TestMethod]
         public async Task TestBigFileGenerate()
         {
-            const long size = 500_000_000;
+            const long size = 200_000_000;
             const string path = "./test.txt";
 
             if (File.Exists(path))

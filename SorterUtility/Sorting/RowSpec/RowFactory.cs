@@ -5,7 +5,7 @@
         public static T InitRow<T>(string lineText, int streamReader = 0) where T : IRow, new()
         {
             var row = new T();
-            row.Init(lineText);
+            row.Init(lineText, streamReader);
             return row;
         }
     }
