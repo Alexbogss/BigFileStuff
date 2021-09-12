@@ -28,6 +28,7 @@ namespace BigFileStuff.SorterUtility.Sorting
         {
             var sortedFilenames = new List<string>(unsortedFiles.Count);
 
+            var tasks = new List<Task>(unsortedFiles.Count);
             foreach (var unsortedFile in unsortedFiles)
             {
                 var sortedFilename = unsortedFile.Replace(
@@ -36,12 +37,12 @@ namespace BigFileStuff.SorterUtility.Sorting
                 var unsortedFilePath = Path.Combine(TempFileLocation, unsortedFile);
                 var sortedFilePath = Path.Combine(TempFileLocation, sortedFilename);
 
-                await SortFile(unsortedFilePath, sortedFilePath);
-
-                File.Delete(unsortedFilePath);
+                tasks.Add(SortFile(unsortedFilePath, sortedFilePath));
 
                 sortedFilenames.Add(sortedFilename);
             }
+
+            await Task.WhenAll(tasks);
 
             return sortedFilenames;
         }
@@ -69,6 +70,8 @@ namespace BigFileStuff.SorterUtility.Sorting
             {
                 await streamWriter.WriteLineAsync(row.Text);
             }
+
+            File.Delete(unsortedFilePath);
         }
 
         private static async Task MergeFiles(IReadOnlyList<string> sortedFiles, Stream target)
@@ -79,38 +82,22 @@ namespace BigFileStuff.SorterUtility.Sorting
             while (!done)
             {
                 var finalRun = sortedFiles.Count <= filesPerRun;
-
                 if (finalRun)
                 {
                     await Merge(sortedFiles, target);
                     return;
                 }
 
-                var runs = sortedFiles.Chunk(filesPerRun);
-                var chunkCounter = 0;
-                foreach (var files in runs)
-                {
-                    var outputFilename = $"{++chunkCounter}{Common.SortedFileExtension}{Common.TempFileExtension}";
-                    if (files.Count == 1)
-                    {
-                        File.Move(GetFullPath(files.First()), GetFullPath(outputFilename.Replace(Common.TempFileExtension, string.Empty)));
-                        continue;
-                    }
+                var fileChunks = sortedFiles.Chunk(filesPerRun);
+                var (tasks, filenames) = MergeFileChunks(fileChunks);
+                await Task.WhenAll(tasks);
 
-                    var outputStream = File.OpenWrite(GetFullPath(outputFilename));
-                    await Merge(files, outputStream);
-                    File.Move(GetFullPath(outputFilename), GetFullPath(outputFilename.Replace(Common.TempFileExtension, string.Empty)), true);
+                foreach (var filename in filenames)
+                {
+                    File.Move(GetFullPath(filename), GetFullPath(filename.Replace(Common.TempFileExtension, string.Empty)), true);
                 }
 
-                sortedFiles = Directory.GetFiles(TempFileLocation, $"*{Common.SortedFileExtension}")
-                    .OrderBy(x =>
-                    {
-                        var filename = Path.GetFileNameWithoutExtension(x);
-                        return int.Parse(filename);
-                    })
-                    .Select(Path.GetFileName)
-                    .ToArray();
-
+                sortedFiles = GetSortedFiles();
                 if (sortedFiles.Count > 1)
                 {
                     continue;
@@ -119,6 +106,40 @@ namespace BigFileStuff.SorterUtility.Sorting
                 done = true;
             }
         }
+
+        private static (IReadOnlyList<Task>, IReadOnlyList<string>) MergeFileChunks(List<List<string>> chunks)
+        {
+            var filenames = new List<string>(chunks.Count);
+            var tasks = new List<Task>(chunks.Count);
+            var chunkCounter = 0;
+
+            foreach (var files in chunks)
+            {
+                var outputFilename = $"{++chunkCounter}{Common.SortedFileExtension}{Common.TempFileExtension}";
+                if (files.Count == 1)
+                {
+                    File.Move(GetFullPath(files.First()), GetFullPath(outputFilename.Replace(Common.TempFileExtension, string.Empty)));
+                    continue;
+                }
+
+                var outputStream = File.OpenWrite(GetFullPath(outputFilename));
+                filenames.Add(outputFilename);
+
+                tasks.Add(Merge(files, outputStream));
+            }
+
+            return (tasks, filenames);
+        }
+
+        private static IReadOnlyList<string> GetSortedFiles() =>
+            Directory.GetFiles(TempFileLocation, $"*{Common.SortedFileExtension}")
+                .OrderBy(x =>
+                {
+                    var filename = Path.GetFileNameWithoutExtension(x);
+                    return int.Parse(filename);
+                })
+                .Select(Path.GetFileName)
+                .ToArray();
 
         private static async Task Merge(IReadOnlyList<string> filesToMerge, Stream outputStream)
         {

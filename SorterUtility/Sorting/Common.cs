@@ -7,6 +7,6 @@
         public const string SortedFileExtension = ".sorted";
         public const string TempFileExtension = ".temp";
         public const string RemovalFileExtension = ".removal";
-        public const int SplitFileLineCount = 1_000_000;
+        public const int SplitFileLineCount = 100_000;
     }
 }
